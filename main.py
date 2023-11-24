@@ -14,9 +14,10 @@ client = MainClient(intents=intents, session=dataSession)
 
 
 @client.command_tree.command(name="force_refresh", description = "Forces the bot to refresh the queue")
-async def force_refresh(interaction):
+async def force_refresh(interaction:discord.Interaction):
     await client.update_rooms_embed()
     await interaction.response.send_message("Queue has been refreshed!", ephemeral = True)
+
 
 
 client.run(config["BOT_TOKEN"])
