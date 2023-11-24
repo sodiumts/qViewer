@@ -3,7 +3,7 @@ import asyncio
 from datetime import datetime
 
 class MainClient(discord.Client):
-    def __init__(self,intents, session, command_tree):
+    def __init__(self,intents, session):
         super().__init__(intents=intents)
         self.synced = False
         self.session = session
