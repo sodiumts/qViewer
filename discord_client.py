@@ -8,6 +8,8 @@ class MainClient(discord.Client):
         self.synced = False
         self.session = session
         self.rooms_message = None
+        self.channel = None
+        
 
 
     async def on_ready(self):
@@ -16,28 +18,35 @@ class MainClient(discord.Client):
             # await tree.sync() #sync the commands to the server
             self.synced = True
 
-        self.loop.create_task(self.sendRoomMessage())
+        self.channel = self.get_channel(978241396714639374)
+        self.loop.create_task(self.sendRepeatedUpdates())
 
-    async def sendRoomMessage(self):
-        channel = self.get_channel(978241396714639374)
+    async def sendRepeatedUpdates(self):
         old_content = ""
         while True:
-            rooms = self.session.getRooms()
-            embedContent = f"{rooms}"
-            
-            embed = discord.Embed(title="Rooms", description=embedContent, timestamp=datetime.now())
+            room_data = await self.get_rooms()
+            embed_contents = f"{room_data}"
 
-            if old_content != embedContent:
-                message = await channel.send(content = "<@567065783499227137>")
+            if old_content != embed_contents:
+                message = await self.channel.send(content = "<@567065783499227137>")
                 await message.delete()
-            
 
-            if self.rooms_message:
-                await self.rooms_message.edit(embed=embed)
-            else:
-                self.rooms_message = await channel.send(embed=embed)
+            old_content = embed_contents
             
-            old_content = embedContent
-
+            await self.update_rooms_embed()
             await asyncio.sleep(10*60)
 
+    async def update_rooms_embed(self):
+        rooms = self.session.getRooms()
+        embedContent = f"{rooms}"
+
+        embed = discord.Embed(title="Rooms", description=embedContent, timestamp=datetime.now())
+        if self.rooms_message:
+            await self.rooms_message.edit(embed=embed)
+        else:
+            self.rooms_message = await self.channel.send(embed=embed)
+
+        
+        
+        
+        
