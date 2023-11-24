@@ -39,5 +39,5 @@ class MainClient(discord.Client):
             
             old_content = embedContent
 
-            await asyncio.sleep(30)
+            await asyncio.sleep(10*60)
 
