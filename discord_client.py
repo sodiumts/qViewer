@@ -1,6 +1,7 @@
 import discord
 import asyncio
 from datetime import datetime
+from discord import app_commands
 
 class MainClient(discord.Client):
     def __init__(self,intents, session):
@@ -9,7 +10,8 @@ class MainClient(discord.Client):
         self.session = session
         self.rooms_message = None
         self.channel = None
-        self.command_tree = command_tree
+        self.command_tree = app_commands(self)
+
         
 
 
