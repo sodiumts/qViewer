@@ -10,7 +10,7 @@ class MainClient(discord.Client):
         self.session = session
         self.rooms_message = None
         self.channel = None
-        self.command_tree = app_commands(self)
+        self.command_tree = app_commands.CommandTree(self)
 
         
 
@@ -18,7 +18,7 @@ class MainClient(discord.Client):
     async def on_ready(self):
         await self.wait_until_ready()
         if not self.synced:
-            await self.command_tree.sync() #sync the commands to the server
+            self.command_tree.sync()
             self.synced = True
 
         self.channel = self.get_channel(978241396714639374)
@@ -27,7 +27,8 @@ class MainClient(discord.Client):
     async def sendRepeatedUpdates(self):
         old_content = ""
         while True:
-            room_data = await self.get_rooms()
+            room_data = self.session.getRooms()
+            print(room_data)
             embed_contents = f"{room_data}"
 
             if old_content != embed_contents:
@@ -40,8 +41,8 @@ class MainClient(discord.Client):
             await asyncio.sleep(10*60)
 
     async def update_rooms_embed(self):
-        rooms = self.session.getRooms()
-        embedContent = f"{rooms}"
+        room_data = self.session.getRooms()
+        embedContent = f"{room_data}"
 
         embed = discord.Embed(title="Rooms", description=embedContent, timestamp=datetime.now())
         if self.rooms_message:
