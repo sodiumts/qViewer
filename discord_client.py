@@ -18,7 +18,8 @@ class MainClient(discord.Client):
     async def on_ready(self):
         await self.wait_until_ready()
         if not self.synced:
-            self.command_tree.sync()
+            print(await self.command_tree.sync(guild = discord.Object(id=978241396714639371)))
+            print(await self.command_tree.sync())
             self.synced = True
 
         self.channel = self.get_channel(978241396714639374)
