@@ -19,5 +19,13 @@ async def force_refresh(interaction:discord.Interaction):
     await interaction.response.send_message("Queue has been refreshed!", ephemeral = True)
 
 
+@client.command_tree.command(name="auth")
+async def update_tokens(interaction:discord.Interaction, cookie:str, token:str):
+    result = await client.session.setTokenCookie(cookie, token)
+    if result:
+        await interaction.response.send_message("Tokens have been updated", ephemeral = True)
+    else:
+        await interaction.response.send_message("Invalid tokens", ephemeral = True)
+
 
 client.run(config["BOT_TOKEN"])

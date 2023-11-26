@@ -29,6 +29,10 @@ class MainClient(discord.Client):
         old_content = ""
         while True:
             room_data = self.session.getRooms()
+
+            if room_data == None:
+                await self.channel.send(content = "Please update the tokens using /auth")
+                return
             print(room_data)
             embed_contents = f"{room_data}"
 
@@ -43,6 +47,11 @@ class MainClient(discord.Client):
 
     async def update_rooms_embed(self):
         room_data = self.session.getRooms()
+        if room_data == None:
+            await self.channel.send(content = "Please update the tokens using /auth")
+            return
+        
+        
         embedContent = f"{room_data}"
 
         embed = discord.Embed(title="Rooms", description=embedContent, timestamp=datetime.now())

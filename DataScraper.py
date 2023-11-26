@@ -21,8 +21,7 @@ class DataScraper():
         if response1.status_code == 200:
             self.rooms_access_token = response1.json()['accessToken']
         else:
-            print(f"Error getting the access_token, status code: {response.status_code}")
-            exit()
+            return None
         headers2 = {
             'Authorization' : f"Bearer {self.rooms_access_token}",
             "Connection" : "keep-alive",
@@ -34,5 +33,28 @@ class DataScraper():
         if response.status_code == 200:
             return response.json()
         else:
-            print(f"Error getting the rooms list, status code: {response.status_code}")
-            exit()
+            return None
+
+    async def setTokenCookie(self,cookie,authToken):
+        header = {
+                "Authorization" : f"Bearer {authToken}",
+                "Connection" : "keep-alive",
+                "Cache-Control" : "no-cache",
+                "Content-Type" : "application/json; charset=utf-8"
+            }
+        cookie = {"ClientToken": cookie}
+
+        if self.checkValidity(header, cookie):
+            self.refreshHeader = header
+            self.cookie = cookie
+            print(f"Cookie updated to {cookie}")
+            print(f"auth token updated to: {authToken}")
+            return True
+        else:
+            print("Not valid tokens")
+            return False
+        
+
+    def checkValidity(self, headers, cookie):
+        return self.session.post("https://horus.apps.utwente.nl/api/auth/token/refresh", headers=headers, cookies=cookie).status_code == 200
+
