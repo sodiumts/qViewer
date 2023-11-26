@@ -39,7 +39,7 @@ class MainClient(discord.Client):
             old_content = embed_contents
 
             await self.update_rooms_embed()
-            await asyncio.sleep(10*60)
+            await asyncio.sleep(5*60)
 
     async def update_rooms_embed(self):
         room_data = self.session.getRooms()
