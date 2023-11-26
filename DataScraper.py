@@ -6,24 +6,23 @@ class DataScraper():
         self.session = requests.Session()
         self.cookie = {"ClientToken": providedCookie}
 
-        refreshHeader = {
+        self.refreshHeader = {
                 "Authorization" : f"Bearer {providedSessionToken}",
                 "Connection" : "keep-alive",
                 "Cache-Control" : "no-cache",
                 "Content-Type" : "application/json; charset=utf-8"
             }
         # Acquire the accessToken 
-        response = self.session.post("https://horus.apps.utwente.nl/api/auth/token/refresh", headers=refreshHeader, cookies=self.cookie)
-        if response.status_code == 200:
-            self.rooms_access_token = response.json()['accessToken']
-        else:
-            print(f"Error getting the access_token, status code: {response.status_code}")
-            exit()
+        
 
 
     def getRooms(self) -> list:
-        if self.rooms_access_token == None:
-            return None
+        response1 = self.session.post("https://horus.apps.utwente.nl/api/auth/token/refresh", headers=self.refreshHeader, cookies=self.cookie)
+        if response1.status_code == 200:
+            self.rooms_access_token = response1.json()['accessToken']
+        else:
+            print(f"Error getting the access_token, status code: {response.status_code}")
+            exit()
         headers2 = {
             'Authorization' : f"Bearer {self.rooms_access_token}",
             "Connection" : "keep-alive",
